@@ -1,0 +1,24 @@
+{
+  "name": "portwatch",
+  "version": "0.1.0",
+  "description": "A lightweight CLI tool to monitor and alert on port usage changes across local dev environments.",
+  "main": "src/index.js",
+  "bin": {
+    "portwatch": "./bin/portwatch.js"
+  },
+  "scripts": {
+    "start": "node bin/portwatch.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": ["port", "monitor", "cli", "dev", "network"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "type": "module"
+}
