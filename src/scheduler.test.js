@@ -48,6 +48,12 @@ describe('scheduler', () => {
     expect(saveSnapshot).toHaveBeenCalledTimes(1);
   });
 
+  test('runScan appends a history entry after scan', async () => {
+    const { appendHistoryEntry } = require('./history');
+    await runScan();
+    expect(appendHistoryEntry).toHaveBeenCalledTimes(1);
+  });
+
   test('startScheduler sets running state', () => {
     jest.useFakeTimers();
     startScheduler(5000);
