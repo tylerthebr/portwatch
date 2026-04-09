@@ -14,6 +14,10 @@ function getBaselinePath() {
 
 function saveBaseline(ports) {
   const baselinePath = getBaselinePath();
+  const dir = path.dirname(baselinePath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
   const entry = {
     timestamp: new Date().toISOString(),
     ports
