@@ -24,6 +24,8 @@ export function parsePortOutput(raw) {
     if (!portMatch) continue;
 
     const port = parseInt(portMatch[1], 10);
+    if (isNaN(port) || port < 0 || port > 65535) continue;
+
     const pidRaw = parts[6] || null;
     const pidMatch = pidRaw && pidRaw.match(/pid=(\d+)/);
     const pid = pidMatch ? pidMatch[1] : null;
