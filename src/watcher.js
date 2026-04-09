@@ -21,10 +21,21 @@ async function startWatcher(scanFn, options = {}) {
   console.log(`[portwatch] Starting watcher (interval: ${interval}ms)`);
 
   startScheduler(async () => {
-    const previous = await loadSnapshot(label);
-    const current = await scanFn();
+    let current;
+    try {
+      current = await scanFn();
+    } catch (err) {
+      console.error('[portwatch] Scan function failed:', err.message);
+      return;
+    }
 
-    await saveSnapshot(label, current);
+    const previous = await loadSnapshot(label);
+
+    try {
+      await saveSnapshot(label, current);
+    } catch (err) {
+      console.error('[portwatch] Failed to save snapshot:', err.message);
+    }
 
     if (!previous) return;
 
