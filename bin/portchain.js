@@ -28,6 +28,14 @@ if (flags.has('--help')) {
   process.exit(0);
 }
 
+// Warn about any unrecognized flags so users catch typos early
+const KNOWN_FLAGS = new Set(['--filter', '--resolve', '--label', '--stats', '--strict', '--help']);
+for (const flag of flags) {
+  if (!KNOWN_FLAGS.has(flag)) {
+    console.warn(`Warning: unrecognized option "${flag}" (ignored)`);
+  }
+}
+
 async function main() {
   const config = loadConfig();
 
