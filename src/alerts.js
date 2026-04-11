@@ -33,7 +33,7 @@ class AlertManager {
         await execAsync(`notify-send "${title}" "${message}"`);
       } else if (platform === 'win32') {
         // Windows toast notification via PowerShell
-        const script = `[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null; $Template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02); $RawXml = [xml] $Template.GetXml(); $RawXml.toast.visual.binding.text[0].AppendChild($RawXml.CreateTextNode("${title}")) >.toast.visual.binding.text[1].AppendChild($RawXml.CreateTextNode("${message}")) > $null; $SerializedXml = New.Data.Xml.Dom.XmlDocument; $SerializedXml.LoadXml($RawXml.OuterXml); $Toast = [Windows.UI.Notifications.To($SerializedXml); $Toast.Tag = "PortWatch"; $Toast.Group = "PortWatch"; $NotNotifications.ToastNotificationManager]::CreateToastNotifier("PortWatch"); $Notifier.ShowToast);`;
+        const script = `[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null; $Template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02); $RawXml = [xml] $Template.GetXml(); $RawXml.toast.visual.binding..Data.Xml.Dom.XmlDocument; $SerializedXml.LoadXml($RawXml.OuterXml); $Toast = [Windows.UI.Notifications.To($SerializedXml); $Toast.Tag = "PortWatch"; $Toast.Group = "PortWatch"; $NotNotifications.ToastNotificationManager]::CreateToastNotifier("PortWatch"); $Notifier.ShowToast);`;
         await execAsync(`powershell -Command "${script}"`);
       }
     } catch (error) {
@@ -77,6 +77,28 @@ class AlertManager {
   }
 
   /**
+   * Format a human-readable summary of port changes
+   * @param {object} diff - diff object with added, removed, changed arrays
+   * @returns {string} formatted summary string
+   */
+  formatChangeSummary(diff) {
+    const { added, removed, changed } = diff;
+    const lines = [];
+
+    if (added.length > 0) {
+      lines.push(`+${added.length} new port(s): ${added.map(p => p.port).join(', ')}`);
+    }
+    if (removed.length > 0) {
+      lines.push(`-${removed.length} closed port(s): ${removed.map(p => p.port).join(', ')}`);
+    }
+    if (changed.length > 0) {
+      lines.push(`~${changed.length} changed port(s): ${changed.map(p => p.port).join(', ')}`);
+    }
+
+    return lines.join(' | ');
+  }
+
+  /**
    * Alert on port changes
    */
   async alertOnChanges(diff) {
@@ -85,17 +107,4 @@ class AlertManager {
 
     if (totalChanges === 0) return;
 
-    const message = `${added.length} new, ${removed.length} closed, ${changed.length} changed`;
-    
-    await this.sendDesktopNotification('PortWatch: Port Changes Detected', message);
-    
-    await this.sendWebhook({
-      event: 'port_changes',
-      timestamp: new Date().toISOString(),
-      summary: message,
-      details: diff
-    });
-  }
-}
-
-module.exports = { AlertManager };
+   
