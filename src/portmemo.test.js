@@ -48,6 +48,14 @@ test('setMemo throws if port or note missing', () => {
   expect(() => setMemo(3000, 123)).toThrow();
 });
 
+test('setMemo overwrites existing memo for same port', () => {
+  const result = setMemo(3000, 'updated note');
+  expect(result.note).toBe('updated note');
+  expect(fs.writeFileSync).toHaveBeenCalled();
+  // ensure updatedAt is refreshed
+  expect(result.updatedAt).not.toBe('2024-01-01T00:00:00.000Z');
+});
+
 test('removeMemo deletes existing entry and returns true', () => {
   const removed = removeMemo(3000);
   expect(removed).toBe(true);
