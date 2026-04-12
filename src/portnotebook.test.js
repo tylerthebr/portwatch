@@ -79,3 +79,15 @@ test('addNote throws if port or text missing', () => {
   expect(() => addNote(null, 'text')).toThrow();
   expect(() => addNote(3000, '')).toThrow();
 });
+
+test('notes persist across separate load() calls', () => {
+  // Verify that notes are written to disk and survive a fresh require
+  const { addNote } = load();
+  addNote(3000, 'persisted note');
+
+  jest.resetModules();
+  const { getNotes } = load();
+  const notes = getNotes(3000);
+  expect(notes).toHaveLength(1);
+  expect(notes[0].text).toBe('persisted note');
+});
