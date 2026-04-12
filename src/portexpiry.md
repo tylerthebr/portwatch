@@ -27,6 +27,16 @@ Formats a stale entry as a human-readable string:
 5432/tcp — last seen 2024-01-01T10:00:00.000Z (2h 15m ago)
 ```
 
+### `groupStaleByProtocol(entries)`
+Groups an array of stale entries by their protocol. Returns an object where each key is a protocol (e.g. `tcp`, `udp`) and the value is an array of stale entries for that protocol.
+
+```js
+{
+  tcp: [ { port: 5432, protocol: 'tcp', ... }, ... ],
+  udp: [ { port: 53, protocol: 'udp', ... }, ... ]
+}
+```
+
 ## Constants
 
 - `DEFAULT_TTL_MS` — `3600000` (1 hour)
