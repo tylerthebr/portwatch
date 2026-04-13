@@ -58,4 +58,20 @@ function buildLabel(entry) {
   return `${proto}:${entry.port}${proc}`;
 }
 
-module.exports = { resolveProcessName, enrichEntry, enrichEntries, buildLabel };
+/**
+ * Group an array of port entries by their process name.
+ * Entries with no resolved process are grouped under 'unknown'.
+ * @param {object[]} entries
+ * @returns {Object.<string, object[]>}
+ */
+function groupByProcess(entries) {
+  if (!Array.isArray(entries)) return {};
+  return entries.reduce((acc, entry) => {
+    const key = (entry.process && entry.process !== '-') ? entry.process : 'unknown';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(entry);
+    return acc;
+  }, {});
+}
+
+module.exports = { resolveProcessName, enrichEntry, enrichEntries, buildLabel, groupByProcess };
