@@ -38,6 +38,14 @@ function removeRule(id) {
   saveRules(next);
 }
 
+/**
+ * Evaluates a single rule against a single port entry.
+ * Supported rule types:
+ *   - port_open:      matches a specific port number
+ *   - port_range:     matches ports between min and max (inclusive)
+ *   - process_match:  matches entries whose process name contains rule.process
+ *   - protocol_match: matches entries with an exact protocol string (e.g. 'tcp')
+ */
 function evaluateRule(rule, entry) {
   switch (rule.type) {
     case 'port_open':
@@ -64,12 +72,21 @@ function evaluateAll(rules, entries) {
   return triggered;
 }
 
+/**
+ * Returns the rule with the given id, or null if not found.
+ */
+function getRule(id) {
+  const rules = loadRules();
+  return rules.find(r => r.id === id) || null;
+}
+
 module.exports = {
   getRulesPath,
   loadRules,
   saveRules,
   addRule,
   removeRule,
+  getRule,
   evaluateRule,
   evaluateAll
 };
