@@ -16,6 +16,7 @@ Returns a clean chain array.
 Runs each step in order against `entries`. Async-safe — each step may return a Promise.
 
 - `opts.strict` — if `true`, throws on any step failure. Default: `false` (skips bad steps).
+- `opts.onStepError(err, step)` — optional callback invoked when a step fails (only called when `strict` is `false`).
 
 ### `defaultChain(opts)`
 Builds a standard chain from boolean/config flags:
@@ -29,6 +30,14 @@ Builds a standard chain from boolean/config flags:
 
 ### `processEntries(entries, opts?)`
 Convenience wrapper — builds default chain and runs it in one call.
+
+### `chainInfo(chain)`
+Returns a summary array of step names from a built chain. Useful for debugging or logging which steps are active.
+
+```js
+const info = chainInfo(chain);
+// => ['applyFilters', 'enrichEntries', 'annotateEntries']
+```
 
 ## Example
 
