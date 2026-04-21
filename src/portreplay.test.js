@@ -28,12 +28,21 @@ describe('getSnapshotAt', () => {
     expect(entry).toBe(mockHistory[2]);
   });
 
+  it('returns entry at negative index -2', () => {
+    const entry = getSnapshotAt(mockHistory, -2);
+    expect(entry).toBe(mockHistory[1]);
+  });
+
   it('returns null for empty history', () => {
     expect(getSnapshotAt([], 0)).toBeNull();
   });
 
   it('returns null for out-of-bounds index', () => {
     expect(getSnapshotAt(mockHistory, 99)).toBeNull();
+  });
+
+  it('returns null for out-of-bounds negative index', () => {
+    expect(getSnapshotAt(mockHistory, -99)).toBeNull();
   });
 });
 
@@ -63,6 +72,13 @@ describe('replayDiff', () => {
     expect(result.from).toBe(mockHistory[0]);
     expect(result.to).toBe(mockHistory[1]);
     expect(snapshot.diffSnapshots).toHaveBeenCalledWith(mockHistory[0].ports, mockHistory[1].ports);
+  });
+
+  it('includes the diff result in the returned object', () => {
+    const mockDiff = { added: [{ port: 4000, process: 'python' }], removed: [] };
+    snapshot.diffSnapshots.mockReturnValue(mockDiff);
+    const result = replayDiff(0, 1);
+    expect(result.diff).toEqual(mockDiff);
   });
 
   it('returns null if from index is invalid', () => {
